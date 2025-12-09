@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Whack A Mole</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Jomhuria&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <div id="gameContainer">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- Start Panel -->
+      <div id="startPanel">
+        <button id="startBtn">Start</button>
+      </div>
+
+      <!-- Score Panel -->
+      <div class="score-panel" id="scorePanel">
+        <div class="top-bar">
+          <button class="home-btn" id="homeBtn">
+            <img src="/images/House.png" alt="Home" />
+          </button>
+
+          <div class="highscore">
+            High score : <span id="highScoreValue">0</span>
+          </div>
+        </div>
+
+        <div class="score-area">
+          <span class="label">Your Score :</span>
+          <span id="scoreValue" class="score">0</span>
+        </div>
+
+        <button id="playAgainBtn" class="play-btn">Play again</button>
+      </div>
+    </div>
+
+    <script type="module" src="./scripts/gameManager.js"></script>
+  </body>
+</html>
