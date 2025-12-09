@@ -3,7 +3,13 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   background-color: #afe57f;
+  overflow: hidden;
+  touch-action: none; /* Prevent scrolling on mobile */
+  -webkit-touch-callout: none; /* Prevent callout on iOS */
+  -webkit-user-select: none; /* Prevent text selection */
+  user-select: none;
 }
 
 #gameContainer {
@@ -11,6 +17,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  touch-action: none;
 }
 
 /* Canvas full screen */
@@ -18,6 +25,8 @@ body {
   display: block;
   width: 100%;
   height: 100%;
+  touch-action: none; /* Prevent default touch behaviors */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ----------------------------------
@@ -56,15 +65,26 @@ body {
         bottom: 10%;
         left: 50%;
         transform: translateX(-50%);
-        padding: 20px 40px;
-        font-size: 32px;
-        font-weight: bold;
+        padding: clamp(16px, 3.5vw, 30px) clamp(40px, 8vw, 70px);
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: normal;
         border: none;
-        border-radius: 10px;
+        border-radius: clamp(12px, 2vw, 15px);
         background: #022d11;
         color: white;
         cursor: pointer;
         z-index: 10;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        max-width: 90vw; /* Prevent button from being too wide on mobile */
+      }
+      
+      #startBtn:hover {
+        background: #034a1a;
+      }
+      
+      #startBtn:active {
+        transform: translateX(-50%) scale(0.95);
       }
 
       
@@ -75,16 +95,17 @@ body {
   position: absolute;
   inset: 0;
   margin: auto;
-  width: min(90%, 1200px);
-  height: auto;
+  width: min(85%, 1200px);
+  max-height: 90vh;
   background: #afe57f;
-  border-radius: 40px;
-  padding: clamp(20px, 5vw, 40px);
+  border-radius: clamp(20px, 4vw, 40px);
+  padding: clamp(15px, 3vw, 40px);
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  gap: clamp(20px, 4vh, 50px);
+  gap: clamp(15px, 3vh, 50px);
   z-index: 10;
+  overflow-y: auto;
 }
 
 /* Top Bar */
@@ -96,8 +117,8 @@ body {
 
 /* Home Button */
 .home-btn {
-  width: clamp(60px, 10vw, 90px);
-  height: clamp(60px, 10vw, 90px);
+  width: clamp(45px, 8vw, 90px);
+  height: clamp(45px, 8vw, 90px);
   background: #022d11;
   border-radius: 50%;
   display: flex;
@@ -112,7 +133,7 @@ body {
 /* High Score */
 .highscore {
   font-family: "Jomhuria";
-  font-size: clamp(60px, 10vw, 120px);
+  font-size: clamp(35px, 8vw, 120px);
   color: #022d11;
 }
 
@@ -124,11 +145,11 @@ body {
 }
 
 .score-area .label {
-  font-size: clamp(80px, 15vw, 200px);
+  font-size: clamp(45px, 12vw, 200px);
 }
 
 .score-area .score {
-  font-size: clamp(100px, 18vw, 230px);
+  font-size: clamp(55px, 14vw, 230px);
 }
 
 /* Play Again Button */
@@ -136,12 +157,37 @@ body {
   background: #022d11;
   color: white;
   border: none;
-  padding: clamp(16px, 3vw, 20px) clamp(50px, 12vw, 80px);
-  font-size: clamp(18px, 3vw, 30px);
-  border-radius: 36px;
+  padding: clamp(12px, 2.5vw, 20px) clamp(35px, 10vw, 80px);
+  font-size: clamp(16px, 2.5vw, 30px);
+  border-radius: clamp(20px, 3vw, 36px);
   font-family: "Inter";
   cursor: pointer;
   align-self: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  max-width: 90vw; /* Prevent button from being too wide on mobile */
+}
+
+.play-btn:hover {
+  background: #034a1a;
+}
+
+.play-btn:active {
+  transform: scale(0.95);
+}
+
+.home-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+.home-btn:hover {
+  background: #034a1a;
+}
+
+.home-btn:active {
+  transform: scale(0.95);
 }
 
 /* ----------------------------------
@@ -149,19 +195,74 @@ body {
 ----------------------------------- */
 @media (max-width: 600px) {
   #startPanel {
-    padding-bottom: 15vh;
+    padding-bottom: 12vh;
+  }
+  
+  #startBtn {
+    bottom: 8%;
+    padding: clamp(14px, 3vw, 26px) clamp(35px, 7vw, 60px);
+    font-size: clamp(24px, 4.5vw, 42px);
+  }
+
+  .score-panel {
+    width: min(92%, 600px);
+    padding: clamp(12px, 2.5vw, 25px);
+    gap: clamp(12px, 2.5vh, 30px);
+    border-radius: clamp(15px, 3vw, 30px);
   }
 
   .top-bar {
     flex-direction: column;
-    gap: 20px;
+    gap: clamp(12px, 2vh, 20px);
+  }
+  
+  .home-btn {
+    width: clamp(40px, 7vw, 70px);
+    height: clamp(40px, 7vw, 70px);
   }
 
   .highscore {
-    font-size: clamp(50px, 12vw, 90px);
+    font-size: clamp(30px, 7vw, 80px);
   }
 
   .score-area {
-    margin-top: 20px;
+    margin-top: clamp(10px, 2vh, 20px);
   }
+  
+  .score-area .label {
+    font-size: clamp(35px, 10vw, 150px);
+  }
+  
+  .score-area .score {
+    font-size: clamp(45px, 12vw, 180px);
+  }
+  
+  .play-btn {
+    padding: clamp(10px, 2vw, 16px) clamp(30px, 8vw, 60px);
+    font-size: clamp(14px, 2.2vw, 24px);
+  }
+}
+
+/* Landscape orientation optimization */
+@media (orientation: landscape) {
+  #startPanel {
+    padding-bottom: 4vh;
+  }
+  
+  #startBtn {
+    bottom: 4%;
+    padding: clamp(14px, 3vh, 26px) clamp(35px, 7vh, 60px);
+    font-size: clamp(24px, 4.5vh, 42px);
+  }
+  
+  .score-panel {
+    width: min(80%, 1000px);
+    padding: clamp(15px, 2.5vh, 35px);
+    gap: clamp(15px, 2.5vh, 40px);
+  }
+}
+
+/* Prevent zoom on double tap */
+* {
+  touch-action: manipulation;
 }

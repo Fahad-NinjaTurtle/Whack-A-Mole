@@ -19,6 +19,12 @@ let totalTime = 1000 * 60;
 let remainingTime = totalTime;
 let timerWidth = 500;
 export const Draw = (dt) => {
+  if (!isGameRunning) {
+    // Clear canvas when game is not running
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+  
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGridParent();
   DrawMoleGridCells();
@@ -31,41 +37,56 @@ export const Draw = (dt) => {
 
 const DrawScore = () => {
   if (isGameRunning) {
-    ctx.font = `${canvas.width / 32}px black`;
-    ctx.fillStyle = "black";
-    ctx.fillText("Score : " + score, 100, 100, 1000);
+    const fontSize = Math.max(20, canvas.width / 32);
+    const padding = Math.max(20, canvas.width * 0.02);
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.fillStyle = "#022d11";
+    const text = "Score : " + score;
+    ctx.fillText(text, padding, fontSize + padding);
   }
 };
+
 const DrawLives = () => {
   if (isGameRunning) {
-    ctx.font = `${canvas.width / 32}px black`;
-    ctx.fillStyle = "black";
-    ctx.fillText("Lives : " + lifes, 100, 200, 1000);
+    const fontSize = Math.max(20, canvas.width / 32);
+    const padding = Math.max(20, canvas.width * 0.02);
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.fillStyle = "#022d11";
+    const text = "Lives : " + lifes;
+    ctx.fillText(text, padding, fontSize * 2.5 + padding);
   }
 };
 
 const DrawTimer = () => {
-  const x = (canvas.width - 500) / 2;
+  if (!isGameRunning) return; // Don't draw timer when game is over
+  
+  // Responsive timer width (60% of screen width, max 600px)
+  const maxTimerWidth = Math.min(canvas.width * 0.6, 600);
+  const currentTimerWidth = (remainingTime / totalTime) * maxTimerWidth;
+  
+  const x = (canvas.width - maxTimerWidth) / 2;
   const y = 10;
-  const h = 30;
+  const h = Math.max(25, canvas.height * 0.04); // Responsive height
 
   // background rounded bar
   ctx.fillStyle = "#7fbf6b";
-  roundRect(ctx, x, y, 500, h, 15);
+  roundRect(ctx, x, y, maxTimerWidth, h, h / 2);
   ctx.fill();
 
   // foreground (remaining) bar
-  if (timerWidth > 0) {
+  if (currentTimerWidth > 0) {
     ctx.fillStyle = "#223a12";
-    roundRect(ctx, x, y, timerWidth, h, 15);
+    roundRect(ctx, x, y, currentTimerWidth, h, h / 2);
     ctx.fill();
   }
 
-  // time text
+  // time text (responsive font size)
   const secondsLeft = Math.ceil(remainingTime / 1000);
+  const fontSize = Math.max(16, canvas.width / 40);
   ctx.fillStyle = "white";
-  ctx.font = "20px Arial";
-  ctx.fillText(secondsLeft + "s", canvas.width / 2 - 10, y + 22);
+  ctx.font = `bold ${fontSize}px Arial`;
+  const textWidth = ctx.measureText(secondsLeft + "s").width;
+  ctx.fillText(secondsLeft + "s", canvas.width / 2 - textWidth / 2, y + h / 2 + fontSize / 3);
 };
 
 // perfect rounded rectangle function
@@ -84,12 +105,12 @@ const roundRect = (ctx, x, y, w, h, r) => {
 };
 
 const ReduceTime = (dt) => {
+  if (!isGameRunning) return;
+  
   if (remainingTime > 0) {
     remainingTime -= dt;
-    timerWidth = (remainingTime / totalTime) * 500;
   } else {
-    remainingTime = totalTime;
-    timerWidth = 500;
+    remainingTime = 0;
     gameOver();
   }
 };
@@ -102,7 +123,6 @@ timeFiller.onload = () => {
 };
 
 
-export const ResetTimer=()=>{
+export const ResetTimer = () => {
   remainingTime = totalTime;
-  timerWidth = 500;
 }

@@ -22,13 +22,19 @@ const homeBtn = document.getElementById("homeBtn");
 let highScore = Number(localStorage.getItem("moleHighScore")) || 0;
 highScoreValue.textContent = highScore;
 
-function resizeCanvas() {
-  canvas.addEventListener("click", onCanvasClick);
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+// Add click listener once (not on every resize)
+canvas.addEventListener("click", onCanvasClick);
 
-  canvas.style.width = window.innerWidth + "px";
-  canvas.style.height = window.innerHeight + "px";
+function resizeCanvas() {
+  // Use actual window dimensions or fullscreen dimensions
+  const width = window.innerWidth || screen.width;
+  const height = window.innerHeight || screen.height;
+  
+  canvas.width = width;
+  canvas.height = height;
+
+  canvas.style.width = width + "px";
+  canvas.style.height = height + "px";
 
   drawGridParent();
 }
@@ -62,7 +68,70 @@ export const GridParentStats = (x, y, squareSize) => {
 
 window.addEventListener("resize", resizeCanvas);
 
-const startGame = () => {
+// Fullscreen functions
+async function requestFullscreen() {
+  const element = document.documentElement;
+  
+  try {
+    if (element.requestFullscreen) {
+      await element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      await element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      await element.msRequestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      await element.mozRequestFullScreen();
+    }
+  } catch (error) {
+    console.log("Fullscreen not available:", error);
+  }
+}
+
+function exitFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  }
+}
+
+// Handle fullscreen changes
+document.addEventListener("fullscreenchange", handleFullscreenChange);
+document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+document.addEventListener("msfullscreenchange", handleFullscreenChange);
+document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+
+function handleFullscreenChange() {
+  // Resize canvas when fullscreen changes
+  setTimeout(() => {
+    resizeCanvas();
+  }, 100);
+}
+
+// Lock orientation to landscape (if supported)
+function lockOrientation() {
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock("landscape").catch(() => {
+      // Orientation lock not supported or failed
+    });
+  } else if (screen.lockOrientation) {
+    screen.lockOrientation("landscape");
+  } else if (screen.mozLockOrientation) {
+    screen.mozLockOrientation("landscape");
+  } else if (screen.msLockOrientation) {
+    screen.msLockOrientation("landscape");
+  }
+}
+
+const startGame = async () => {
+  // Request fullscreen and landscape orientation
+  await requestFullscreen();
+  lockOrientation();
+  
   isGameRunning = true;
   score = 0;
   lifes = 4;
@@ -72,8 +141,11 @@ const startGame = () => {
   startPanel.style.display = "none";
   scorePanel.style.display = "none";
 
-  resizeCanvas();
-  CreateMolesGridCell();
+  // Small delay to ensure fullscreen is active before resizing
+  setTimeout(() => {
+    resizeCanvas();
+    CreateMolesGridCell();
+  }, 100);
 };
 
 export const gameOver = () => {
@@ -85,7 +157,14 @@ export const gameOver = () => {
   }
   highScoreValue.textContent = highScore;
   scoreValue.textContent = score;
+  
+  // Clear the canvas to remove score, lives, and timer text
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
   scorePanel.style.display = "flex";
+  
+  // Exit fullscreen when game ends (optional - comment out if you want to stay fullscreen)
+  // exitFullscreen();
 };
 
 export const lifeReduce = () => {
@@ -118,6 +197,9 @@ function loop(currentTime) {
 
 requestAnimationFrame(loop);
 
+// Initialize canvas on page load
+resizeCanvas();
+
 startBtn.onclick = () => startGame();
 
 playAgainBtn.onclick = () => {
@@ -129,4 +211,6 @@ playAgainBtn.onclick = () => {
 homeBtn.onclick = () => {
   scorePanel.style.display = "none";
   startPanel.style.display = "block";
+  // Exit fullscreen when returning to home
+  exitFullscreen();
 };

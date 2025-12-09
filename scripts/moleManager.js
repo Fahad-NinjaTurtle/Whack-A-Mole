@@ -12,6 +12,11 @@ groundImage.src = "./sprites/ground.png";
 export const moleImage = new Image();
 moleImage.src = "./sprites/mole.png";
 
+// Hit sound effect
+const hitSound = new Audio("./sounds/Hit.m4a");
+hitSound.volume = 0.7; // Set volume to 70%
+hitSound.preload = "auto"; // Preload the audio
+
 let row = 3;
 let col = 3;
 
@@ -135,6 +140,17 @@ const CheckMoleHit = (mouseX, mouseY) => {
 const KillMole = (cell) => {
   isMolehitten = true;
   cell.showMole = false;
+  
+  // Play hit sound
+  if (hitSound) {
+    // Reset audio to start and play
+    hitSound.currentTime = 0;
+    hitSound.play().catch(error => {
+      // Handle autoplay restrictions (browsers may block autoplay)
+      console.log("Sound play failed:", error);
+    });
+  }
+  
   console.log("score ++");
 };
 class Cell {
