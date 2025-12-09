@@ -102,14 +102,15 @@ HTML 5 Week 4/
 ├── README.md           # Project documentation
 ├── .gitignore          # Git ignore file
 ├── package.json        # Node.js dependencies
-├── images/             # Image assets
-│   ├── House.png       # Home button icon
-│   └── Start.png       # Start screen background
-├── sprites/            # Game sprites
+├── sprites/            # Game sprites and UI images
 │   ├── ground.png      # Ground texture
 │   ├── mole.png        # Mole sprite
 │   ├── timerbg.png     # Timer background
-│   └── timerFiller.png # Timer fill sprite
+│   ├── timerFiller.png # Timer fill sprite
+│   ├── House.png       # Home button icon
+│   └── Start.png       # Start screen background
+├── sounds/             # Sound effects
+│   └── Hit.m4a         # Hit sound effect
 └── scripts/            # JavaScript modules
     ├── gameManager.js  # Main game logic and state management
     ├── moleManager.js  # Mole grid and click handling
@@ -159,5 +160,4 @@ Created as part of HTML5 Week 4 project.
 
 **Enjoy playing Whack A Mole! 🎉**
 
-*Remember to update the live link in the README with your actual deployment URL.*
 

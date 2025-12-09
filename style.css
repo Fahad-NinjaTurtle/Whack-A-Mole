@@ -35,7 +35,7 @@ body {
 #startPanel {
   position: absolute;
   inset: 0;
-  background-image: url("/images/Start.png");
+  background-image: url("./sprites/Start.png");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
