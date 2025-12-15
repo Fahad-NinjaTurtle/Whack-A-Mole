@@ -7,11 +7,15 @@ export const canvas = document.getElementById("gameCanvas");
 /** @type {CanvasRenderingContext2D} */
 export const ctx = canvas.getContext("2d");
 export let score = 0;
-export let lifes = 4;
+export let lifes = 3;
 export let isGameRunning = false;
+let firstMissIgnored = false;
 
 const startPanel = document.getElementById("startPanel");
 const scorePanel = document.getElementById("scorePanel");
+const missPanel = document.getElementById("missPanel");
+const missMessage = document.getElementById("missMessage");
+const resumeBtn = document.getElementById("resumeBtn");
 const startBtn = document.getElementById("startBtn");
 const scoreValue = document.getElementById("scoreValue");
 const highScoreValue = document.getElementById("highScoreValue");
@@ -135,11 +139,13 @@ const startGame = async () => {
   isGameRunning = true;
   score = 0;
   lifes = 4;
+  firstMissIgnored = false;
   ResetTimer();
   scoreValue.textContent = score;
 
   startPanel.style.display = "none";
   scorePanel.style.display = "none";
+  if (missPanel) missPanel.style.display = "none";
 
   // Small delay to ensure fullscreen is active before resizing
   setTimeout(() => {
@@ -170,9 +176,25 @@ export const gameOver = () => {
 export const lifeReduce = () => {
   if (!isGameRunning) return;
 
+  // Ignore the very first miss of the game (no life loss, no panel)
+  if (!firstMissIgnored) {
+    firstMissIgnored = true;
+    return;
+  }
+
   lifes--;
   if (lifes <= 0) {
     gameOver();
+    return;
+  }
+
+  // Pause game and show missed mole panel
+  isGameRunning = false;
+  if (missMessage) {
+    missMessage.textContent = `You missed a mole. ${lifes} lives left`;
+  }
+  if (missPanel) {
+    missPanel.style.display = "flex";
   }
 };
 export const ScoreModifier = (s) => {
@@ -214,3 +236,12 @@ homeBtn.onclick = () => {
   // Exit fullscreen when returning to home
   exitFullscreen();
 };
+
+if (resumeBtn) {
+  resumeBtn.onclick = () => {
+    if (missPanel) {
+      missPanel.style.display = "none";
+    }
+    isGameRunning = true;
+  };
+}
