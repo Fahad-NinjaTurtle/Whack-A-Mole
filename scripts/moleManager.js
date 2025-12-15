@@ -23,9 +23,13 @@ let col = 3;
 let cells = [];
 let size = 0;
 let isMolehitten = false;
+let lastMoleRow = -1;
+let lastMoleCol = -1;
 export const CreateMolesGridCell = () => {
   const cellSize = parentGrid.size / row;
   cells = [];
+  lastMoleRow = -1;
+  lastMoleCol = -1;
   for (let i = 0; i < row; i++) {
     cells[i] = [];
     for (let j = 0; j < col; j++) {
@@ -93,8 +97,13 @@ export const DrawRandomMole = (dt) => {
 };
 
 const ActiveOneMole = () => {
-  let r = Math.floor(Math.random() * row);
-  let c = Math.floor(Math.random() * col);
+  let r, c;
+  
+  // Ensure next mole is not at the same position as the last one
+  do {
+    r = Math.floor(Math.random() * row);
+    c = Math.floor(Math.random() * col);
+  } while (r === lastMoleRow && c === lastMoleCol && lastMoleRow !== -1);
 
   // hide all moles first
   for (let i = 0; i < row; i++) {
@@ -105,6 +114,11 @@ const ActiveOneMole = () => {
 
   // show mole at random cell
   cells[r][c].showMole = true;
+  
+  // Track this position for next time
+  lastMoleRow = r;
+  lastMoleCol = c;
+  
   isMolehitten = false;
 };
 
