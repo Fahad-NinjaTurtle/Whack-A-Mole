@@ -41,6 +41,8 @@ function resizeCanvas() {
   canvas.style.height = height + "px";
 
   drawGridParent();
+  // Recreate mole grid so positions match new canvas size
+  CreateMolesGridCell();
 }
 
 export const drawGridParent = () => {
